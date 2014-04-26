@@ -3,8 +3,62 @@
     <head>
         <meta http-equiv="content-type" content="text/html; charset=UTF-8">
         <title>Triagonal Roticerod</title>
+        <script type="text/javascript" src="prefixfree.min.js"></script>
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet" type="text/css">
         <style>
             body {
+                background-color: #aab2bd;
+                font-weight: 400;
+                font-family: "Raleway", sans-serif;
+                text-transform: uppercase;
+            }
+
+            .link {
+                display: inline-block;
+                box-sizing: border-box;
+                height: 35px;
+
+                text-decoration: none;
+                cursor: pointer;
+                vertical-align: bottom;
+            }
+
+            body.dark .link {
+                color: #000;
+                border-bottom: solid 2px rgba(0,0,0,0.35);
+            }
+
+            body.light .link {
+                color: #fff;
+                border-bottom: solid 2px rgba(255,255,255,0.35);
+            }
+
+            .ampersand {
+                position: relative;
+                display: inline-block;
+                vertical-align: bottom;
+                height: 35px;
+                width: 35px;
+                margin: 0 3px;
+            }
+
+            .ampersand::after {
+                position: absolute;
+                content: '&';
+                display: block;
+
+                width: 16px;
+                height: 16px;
+                padding: 6px;
+                background: rgba(0,0,0,0.35);
+                line-height: 16px;
+                font-size: 17px;
+                border-radius: 50%;
+                text-align: center;
+                font-weight: 700;
+
+                top: 50%; left: 50%;
+                transform: translate3d(-50%, -50%, 0);
             }
 
             .triagonal {
@@ -16,8 +70,30 @@
                 background-size: cover;
                 background-position: 50% 50%;
             }
+
+            header {
+                position: absolute;
+                top: 50%; left: 50%;
+                transform: translate3d(-50%, -50%, 0);
+            }
+
+            header h1 {
+                white-space: nowrap;
+                font-size: 56px;
+                margin: 0 0 21px 0;
+            }
+
+            header h2 {
+                font-size: 28px;
+                margin: 0 0 17px 0;
+                font-weight: 400;
+            }
+
+            .content {
+
+            }
         </style>
-        <script type='text/javascript' src='../triagonal-roticerod.js'></script>
+        <script type="text/javascript" src="../triagonal-roticerod.js"></script>
         <script>
             window.onload = function() {
                 var containerStyle = document.querySelector('.triagonal').style;
@@ -56,6 +132,10 @@
                     Triagonal.createShade('#040b3c','#012459'),
                 ];
 
+                var textBrightness = [
+
+                ];
+
                 function makeTriagonal() {
                     triagonal = Triagonal.generate({
                         width: 'auto',
@@ -80,8 +160,21 @@
             }
         </script>
     </head>
-    <body>
+    <body class="dark">
         <div class="triagonal"></div>
+        <header>
+            <div class="sigil"></div>
+            <h1>Triagonal Roticerod</h1>
+            <h2>Create colourful triangle patterns</h2>
+            <h2>
+                <span class="link open-menu">Test Drive</span>
+                <span class="ampersand"></span>
+                <a href="#" class="link">Github</a>
+            </h2>
+        </header>
+        <div class="content">
+
+        </div>
     </body>
 </html>
 
