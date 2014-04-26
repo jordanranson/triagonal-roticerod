@@ -4,9 +4,26 @@ Triagonal = {};
 
     var _height = Math.sqrt(3) / 2; // height of an equilateral triangle
 
-    function setupCanvas(canvas, params) {
+    function setupCanvas(canvas, context, params) {
+        var tHeight, height, offset;
         canvas.width = params.width;
         canvas.height = params.height;
+
+        if(params.width > params.height) {
+            tHeight = params.width/params.scale;
+            height = params.height/tHeight;
+            offset = height - (height << 0);
+            offset = (tHeight - (offset*tHeight)) / 2;
+
+            context.translate(0, -offset);
+        } else {
+            tHeight = params.height/params.scale;
+            height = params.width/tHeight;
+            offset = height - (height << 0);
+            offset = (tHeight - (offset*tHeight)) / 2;
+
+            context.translate(-offset, 0);
+        }
     }
 
     function jitter(value, magnitude) {
@@ -152,9 +169,7 @@ Triagonal = {};
         params.magnitude    = params.magnitude >= 0 ? params.magnitude : 0.15; // 15% point randomization
         params.grid         = params.grid     || generateGrid(params);
 
-        console.log(params);
-
-        setupCanvas(canvas, params);
+        setupCanvas(canvas, context, params);
         drawTriangles(context, params);
 
         return canvas;
