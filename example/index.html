@@ -21,8 +21,11 @@
         <script>
             window.onload = function() {
                 var containerStyle = document.querySelector('.triagonal').style;
+                var curTime = new Date().getHours();
                 var triagonal;
 
+                // gradients for every hour of the day
+                // taken from http://codepen.io/Bork/pen/wJhEm
                 var shades = [
                     Triagonal.createShade('#012459','#001322'), // 0
                     Triagonal.createShade('#003972','#001322'),
@@ -53,16 +56,27 @@
                     Triagonal.createShade('#040b3c','#012459'),
                 ];
 
-                //setInterval(function() {
-                triagonal = Triagonal.generate({
-                    width: 'auto',
-                    height: 'auto',
-                    scale: 15,
-                    magnitude: 0,
-                    shade: shades[Math.random()*shades.length<<0]
-                }).toDataURL();
-                containerStyle.backgroundImage = 'url('+triagonal+')';
-                //}, 33);
+                function makeTriagonal() {
+                    triagonal = Triagonal.generate({
+                        width: 'auto',
+                        height: 'auto',
+                        scale: 10,
+                        magnitude: 0,
+                        shadeVariance: 0.2,
+                        shade: shades[new Date().getHours()]
+                    }).toDataURL();
+                    containerStyle.backgroundImage = 'url('+triagonal+')';
+                }
+                makeTriagonal();
+
+                // update shade if the hour changes
+                setInterval(function() {
+                    var newTime = new Date().getHours();
+                    if(newTime > curTime || (curTime === 23 && newTime === 0)) {
+                        curTime = newTime;
+                        makeTriagonal();
+                    }
+                }, 60000);
             }
         </script>
     </head>
