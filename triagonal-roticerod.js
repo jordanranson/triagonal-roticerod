@@ -6,10 +6,7 @@ Triagonal = {};
 
     function setupCanvas(canvas, params) {
         canvas.width = params.width;
-        canvas.height =
-            params.height && params.height === 'auto' ?
-                window.innerHeight :
-                params.height || 300;
+        canvas.height = params.height;
     }
 
     function jitter(value, magnitude) {
@@ -19,9 +16,7 @@ Triagonal = {};
     function generateGrid(params) {
         var grid      = [];
         var magnitude = params.magnitude;
-        var length    = params.width > params.height ?
-                            Math.ceil(params.width / params.scale)+1 :
-                            Math.ceil(params.height / params.scale)+1;
+        var length    = params.scale + 1;
         var row, col, o;
 
         for(var y = 0; y < length; y++) {
@@ -55,7 +50,9 @@ Triagonal = {};
 
     function drawEven(context, x, y, params) {
         var grid = params.grid;
-        var scale = params.scale;
+        var scale = params.width > params.height ?
+            (params.width / params.scale) :
+            (params.height / params.scale)
         var p1, p2, p3;
 
         if(!(grid[y+1] && grid[y+1][x+1])) return;
@@ -91,7 +88,9 @@ Triagonal = {};
 
     function drawOdd(context, x, y, params) {
         var grid = params.grid;
-        var scale = params.scale;
+        var scale = params.width > params.height ?
+            (params.width / params.scale):
+            (params.height / params.scale)
         var p1, p2, p3;
 
         if(!(grid[y+1] && grid[y+1][x+1])) return;
@@ -149,7 +148,7 @@ Triagonal = {};
             window.innerHeight :
             params.height || 300;
 
-        params.scale        = params.scale    || 50;
+        params.scale        = params.scale    || 10;
         params.magnitude    = params.magnitude >= 0 ? params.magnitude : 0.15; // 15% point randomization
         params.grid         = params.grid     || generateGrid(params);
 
