@@ -19,14 +19,50 @@
         </style>
         <script type='text/javascript' src='../triagonal-roticerod.js'></script>
         <script>
-            var settings = {
-                width: 'auto',
-                height: 'auto',
-            };
-
             window.onload = function() {
-                var triagonal = Triagonal.generate(settings).toDataURL();
-                document.querySelector('.triagonal').style.backgroundImage = 'url('+triagonal+')';
+                var containerStyle = document.querySelector('.triagonal').style;
+                var triagonal;
+
+                var shades = [
+                    Triagonal.createShade('#012459','#001322'), // 0
+                    Triagonal.createShade('#003972','#001322'),
+                    Triagonal.createShade('#003972','#001322'),
+                    Triagonal.createShade('#004372','#00182b'),
+                    Triagonal.createShade('#004372','#011d34'),
+                    Triagonal.createShade('#016792','#00182b'),
+
+                    Triagonal.createShade('#07729f','#042c47'), // 6
+                    Triagonal.createShade('#12a1c0','#07506e'),
+                    Triagonal.createShade('#74d4cc','#1386a6'),
+                    Triagonal.createShade('#efeebc','#61d0cf'),
+                    Triagonal.createShade('#fee154','#a3dec6'),
+                    Triagonal.createShade('#fdc352','#e8ed92'),
+
+                    Triagonal.createShade('#ffac6f','#ffe467'), // 12
+                    Triagonal.createShade('#fda65a','#ffe467'),
+                    Triagonal.createShade('#fd9e58','#ffe467'),
+                    Triagonal.createShade('#f18448','#ffd364'),
+                    Triagonal.createShade('#f06b7e','#f9a856'),
+                    Triagonal.createShade('#ca5a92','#f4896b'),
+
+                    Triagonal.createShade('#5b2c83','#d1628b'), // 18
+                    Triagonal.createShade('#371a79','#713684'),
+                    Triagonal.createShade('#28166b','#45217c'),
+                    Triagonal.createShade('#192861','#372074'),
+                    Triagonal.createShade('#040b3c','#233072'),
+                    Triagonal.createShade('#040b3c','#012459'),
+                ];
+
+                //setInterval(function() {
+                triagonal = Triagonal.generate({
+                    width: 'auto',
+                    height: 'auto',
+                    scale: 15,
+                    magnitude: 0,
+                    shade: shades[Math.random()*shades.length<<0]
+                }).toDataURL();
+                containerStyle.backgroundImage = 'url('+triagonal+')';
+                //}, 33);
             }
         </script>
     </head>

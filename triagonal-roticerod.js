@@ -56,6 +56,26 @@ Triagonal = {};
         return grid;
     }
 
+    function makeColor(data) {
+        var color = [
+            'rgb(',
+            data[0],
+            ',',
+            data[1],
+            ',',
+            data[2],
+            ')'
+        ];
+
+        return color.join('');
+    }
+
+    // returns a random pixel position within a threshold from a gradient
+    // used to randomize the vertex colours in each row
+    function grdPos(y) {
+        return ((y*10)+5) + ((Math.random()*10)-5);
+    }
+
     function drawPolygon(context, p1, p2, p3, fillStyle) {
         context.beginPath();
 
@@ -68,84 +88,98 @@ Triagonal = {};
         context.closePath();
     }
 
-    function drawEven(context, x, y, params) {
+    function drawVertex(context, x, y, params, drawingMode) {
         var grid = params.grid;
-        var scale = params.width > params.height ?
-            (params.width / params.scale) :
-            (params.height / params.scale)
-        var p1, p2, p3;
-
         if(!(grid[y+1] && grid[y+1][x+1])) return;
 
-        p1 = {
-            x: grid[y][x].x * scale,
-            y: grid[y][x].y * scale
-        };
-        p2 = {
-            x: grid[y+1][x].x * scale,
-            y: grid[y+1][x].y * scale
-        };
-        p3 = {
-            x: grid[y+1][x+1].x * scale,
-            y: grid[y+1][x+1].y * scale
-        };
-        drawPolygon(context, p1, p2, p3, '#f00');
+        var scale = params.size;
+        var color = params.shadeCtx.getImageData(0, grdPos(y), 1, 1);
 
-        p1 = {
-            x: grid[y][x].x * scale,
-            y: grid[y][x].y * scale
-        };
-        p2 = {
-            x: grid[y+1][x+1].x * scale,
-            y: grid[y+1][x+1].y * scale
-        };
-        p3 = {
-            x: grid[y][x+1].x * scale,
-            y: grid[y][x+1].y * scale
-        };
-        drawPolygon(context, p1, p2, p3, '#00f');
+        var p1, p2, p3;
+
+        if(drawingMode === 'even') {
+            p1 = {
+                x: grid[y][x].x * scale,
+                y: grid[y][x].y * scale
+            };
+            p2 = {
+                x: grid[y+1][x].x * scale,
+                y: grid[y+1][x].y * scale
+            };
+            p3 = {
+                x: grid[y+1][x+1].x * scale,
+                y: grid[y+1][x+1].y * scale
+            };
+            drawPolygon(context, p1, p2, p3, makeColor(color.data));
+
+            color = params.shadeCtx.getImageData(0, grdPos(y), 1, 1);
+            p1 = {
+                x: grid[y][x].x * scale,
+                y: grid[y][x].y * scale
+            };
+            p2 = {
+                x: grid[y+1][x+1].x * scale,
+                y: grid[y+1][x+1].y * scale
+            };
+            p3 = {
+                x: grid[y][x+1].x * scale,
+                y: grid[y][x+1].y * scale
+            };
+            drawPolygon(context, p1, p2, p3, makeColor(color.data));
+        }
+        else if(drawingMode === 'odd') {
+            p1 = {
+                x: grid[y][x].x * scale,
+                y: grid[y][x].y * scale
+            };
+            p2 = {
+                x: grid[y+1][x].x * scale,
+                y: grid[y+1][x].y * scale
+            };
+            p3 = {
+                x: grid[y][x+1].x * scale,
+                y: grid[y][x+1].y * scale
+            };
+            drawPolygon(context, p1, p2, p3, makeColor(color.data));
+
+            color = params.shadeCtx.getImageData(0, grdPos(y), 1, 1);
+            p1 = {
+                x: grid[y][x+1].x * scale,
+                y: grid[y][x+1].y * scale
+            };
+            p2 = {
+                x: grid[y+1][x].x * scale,
+                y: grid[y+1][x].y * scale
+            };
+            p3 = {
+                x: grid[y+1][x+1].x * scale,
+                y: grid[y+1][x+1].y * scale
+            };
+            drawPolygon(context, p1, p2, p3, makeColor(color.data));
+        }
     }
 
     function drawOdd(context, x, y, params) {
-        var grid = params.grid;
-        var scale = params.width > params.height ?
-            (params.width / params.scale):
-            (params.height / params.scale)
-        var p1, p2, p3;
+        drawVertex(context, x, y, params, 'odd');
+    }
 
-        if(!(grid[y+1] && grid[y+1][x+1])) return;
+    function drawEven(context, x, y, params) {
+        drawVertex(context, x, y, params, 'even');
+    }
 
-        p1 = {
-            x: grid[y][x].x * scale,
-            y: grid[y][x].y * scale
-        };
-        p2 = {
-            x: grid[y+1][x].x * scale,
-            y: grid[y+1][x].y * scale
-        };
-        p3 = {
-            x: grid[y][x+1].x * scale,
-            y: grid[y][x+1].y * scale
-        };
-        drawPolygon(context, p1, p2, p3, '#ff0');
+    function drawBackground(context, width, y, params) {
+        var colorData = params.shadeCtx.getImageData(0, (y*10)+5, 1, 1).data;
 
-        p1 = {
-            x: grid[y][x+1].x * scale,
-            y: grid[y][x+1].y * scale
-        };
-        p2 = {
-            x: grid[y+1][x].x * scale,
-            y: grid[y+1][x].y * scale
-        };
-        p3 = {
-            x: grid[y+1][x+1].x * scale,
-            y: grid[y+1][x+1].y * scale
-        };
-        drawPolygon(context, p1, p2, p3, '#0f0');
+        width *= params.size;
+        y *= params.size;
+
+        context.fillStyle = makeColor(colorData);
+        context.fillRect(-1, y-1, width+1, params.size+1);
     }
 
     function drawTriangles(context, params) {
         for(var y = 0; y < params.grid.length; y++) {
+            drawBackground(context, params.grid[y].length, y, params);
             for(var x = 0; x < params.grid[y].length; x++) {
                 y % 2 === 0 ?
                     drawEven(context, x, y, params) :
@@ -155,6 +189,8 @@ Triagonal = {};
     }
 
     Triagonal.generate = function(params) {
+        var delta, end, start = new Date().getTime();
+
         var canvas = document.createElement('canvas');
         var context = canvas.getContext('2d');
 
@@ -172,10 +208,39 @@ Triagonal = {};
         params.scale       *= params.width > params.height ? 1 : _height;
         params.magnitude    = params.magnitude >= 0 ? params.magnitude : 0.15; // 15% point randomization
         params.grid         = params.grid     || generateGrid(params);
+        params.shade        = params.shade(params.scale+2);
+        params.shadeCtx     = params.shade.getContext('2d');
+        params.size         = params.width > params.height ?
+            (params.width / params.scale) :
+            (params.height / params.scale)
 
         setupCanvas(canvas, context, params);
         drawTriangles(context, params);
 
+        end = new Date().getTime();
+        delta = end - start;
+        //console.log('time took to process...', delta);
+
         return canvas;
     };
+
+    Triagonal.createShade = function(from, to) {
+        return function(rows) {
+            rows *= 10;
+
+            var canvas = document.createElement('canvas');
+                canvas.height = rows;
+                canvas.width = 10;
+            var context = canvas.getContext('2d');
+            var gradient = context.createLinearGradient(0,0,0,rows);
+
+            gradient.addColorStop(0,from);
+            gradient.addColorStop(1,to);
+
+            context.fillStyle = gradient;
+            context.fillRect(0,0,10,rows);
+
+            return canvas;
+        }
+    }
 })();
