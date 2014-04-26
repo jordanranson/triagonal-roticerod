@@ -11,6 +11,17 @@
                 font-weight: 400;
                 font-family: "Raleway", sans-serif;
                 text-transform: uppercase;
+                transition:
+                    color 1000ms ease-in-out,
+                    border-color 1000ms ease-in-out;
+            }
+
+            body.dark {
+                color: #000;
+            }
+
+            body.light {
+                color: #fff;
             }
 
             .link {
@@ -21,6 +32,10 @@
                 text-decoration: none;
                 cursor: pointer;
                 vertical-align: bottom;
+
+                transition:
+                    color 1000ms ease-in-out,
+                    border-color 1000ms ease-in-out;
             }
 
             body.dark .link {
@@ -59,6 +74,14 @@
 
                 top: 50%; left: 50%;
                 transform: translate3d(-50%, -50%, 0);
+
+                transition:
+                    color 1000ms ease-in-out,
+                    background-color 1000ms ease-in-out;
+            }
+
+            body.light .ampersand::after {
+                background-color: rgba(255,255,255,0.35);
             }
 
             .triagonal {
@@ -97,8 +120,9 @@
         <script>
             window.onload = function() {
                 var containerStyle = document.querySelector('.triagonal').style;
+                var ampersandStyle = document.querySelector('.ampersand').style;
+                var body = document.querySelector('body');
                 var curTime = new Date().getHours();
-                var triagonal;
 
                 // gradients for every hour of the day
                 // taken from http://codepen.io/Bork/pen/wJhEm
@@ -133,19 +157,26 @@
                 ];
 
                 var textBrightness = [
-
+                    1, 1, 1, 1, 1, 1,
+                    1, 1, 0, 0, 0, 0,
+                    0, 0, 1, 1, 1, 1,
+                    1, 1, 1, 1, 1, 1
                 ];
 
                 function makeTriagonal() {
-                    triagonal = Triagonal.generate({
+                    var triagonal = Triagonal.generate({
                         width: 'auto',
                         height: 'auto',
                         scale: 7,
                         magnitude: 0,
                         shadeVariance: 0.2,
-                        shade: shades[new Date().getHours()]
+                        shade: shades[curTime]
                     }).toDataURL();
+
+                    var color = Triagonal.getColorFromShade(shades[curTime], 50);
+                    body.className = textBrightness[curTime] === 0 ? 'dark' : 'light';
                     containerStyle.backgroundImage = 'url('+triagonal+')';
+                    ampersandStyle.color = color;
                 }
                 makeTriagonal();
 
@@ -157,6 +188,14 @@
                         makeTriagonal();
                     }
                 }, 60000);
+
+                setInterval(function() {
+                    curTime += 1;
+                    if(curTime > 23) {
+                        curTime = 0;
+                    }
+                    makeTriagonal();
+                }, 1000);
             }
         </script>
     </head>

@@ -246,5 +246,13 @@ Triagonal = {};
 
             return canvas;
         }
+    };
+
+    Triagonal.getColorFromShade = function(shade, position) {
+        var canvas = shade(1);
+        var position = position < 0 ? 0 : position > 100 ? 100 : position;
+        var color = canvas.getContext('2d').getImageData(0, position, 1, 1);
+
+        return makeColor(color.data);
     }
 })();
