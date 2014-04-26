@@ -5,12 +5,15 @@ Triagonal = {};
     var _height = Math.sqrt(3) / 2; // height of an equilateral triangle
 
     function setupCanvas(canvas, context, params) {
-        var tHeight, height, offset;
+        var tHeight = params.width/params.scale;
+        var height, offset;
+
         canvas.width = params.width;
         canvas.height = params.height;
 
+        context.translate(0, -(tHeight*_height));
         if(params.width > params.height) {
-            tHeight = params.width/params.scale;
+            tHeight *= _height;
             height = params.height/tHeight;
             offset = height - (height << 0);
             offset = (tHeight - (offset*tHeight)) / 2;
@@ -18,11 +21,11 @@ Triagonal = {};
             context.translate(0, -offset);
         } else {
             tHeight = params.height/params.scale;
-            height = params.width/tHeight;
+            height = (params.width/tHeight);
             offset = height - (height << 0);
             offset = (tHeight - (offset*tHeight)) / 2;
 
-            context.translate(-offset, 0);
+            context.translate(-(tHeight+offset), 0);
         }
     }
 
@@ -33,7 +36,7 @@ Triagonal = {};
     function generateGrid(params) {
         var grid      = [];
         var magnitude = params.magnitude;
-        var length    = params.scale + 1;
+        var length    = params.scale + 2;
         var row, col, o;
 
         for(var y = 0; y < length; y++) {
@@ -41,10 +44,10 @@ Triagonal = {};
             o = y % 2 === 1 ? 0 : 0.5; // 50% offset on odd rows to make a triangle shape
             grid.push(row);
 
-            for(var x = 0; x < length; x++) {
+            for(var x = -1; x < length; x++) {
                 col = {
-                    x: jitter(x, magnitude),
-                    y: jitter(y, magnitude)
+                    x: jitter(x+o, magnitude),
+                    y: jitter(y*_height, magnitude)
                 }
                 row.push(col);
             }
@@ -166,6 +169,7 @@ Triagonal = {};
             params.height || 300;
 
         params.scale        = params.scale    || 10;
+        params.scale       *= params.width > params.height ? 1 : _height;
         params.magnitude    = params.magnitude >= 0 ? params.magnitude : 0.15; // 15% point randomization
         params.grid         = params.grid     || generateGrid(params);
 
