@@ -1,71 +1,253 @@
-<!doctype html>
+<!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="utf-8">
-    <meta http-equiv="X-UA-Compatible" content="chrome=1">
-    <title>Triagonal-roticerod by jordanranson</title>
+    <head>
+        <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+        <title>Triagonal Roticerod</title>
+        <script type="text/javascript" src="prefixfree.min.js"></script>
+        <link href="//fonts.googleapis.com/css?family=Raleway:400,700" rel="stylesheet" type="text/css">
+        <style>
+            body {
+                background-color: #aab2bd;
+                font-weight: 400;
+                font-family: "Raleway", sans-serif;
+                text-transform: uppercase;
+            }
 
-    <link rel="stylesheet" href="stylesheets/styles.css">
-    <link rel="stylesheet" href="stylesheets/pygment_trac.css">
-    <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
-    <!--[if lt IE 9]>
-    <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
-    <![endif]-->
-  </head>
-  <body>
-    <div class="wrapper">
-      <header>
-        <h1>Triagonal-roticerod</h1>
-        <p>Makes gradients in a triangle pattern</p>
+            body.dark {
+                color: #000;
+            }
 
-        <p class="view"><a href="https://github.com/jordanranson/triagonal-roticerod">View the Project on GitHub <small>jordanranson/triagonal-roticerod</small></a></p>
+            body.light {
+                color: #fff;
+            }
 
+            .link {
+                display: inline-block;
+                box-sizing: border-box;
+                height: 35px;
 
-        <ul>
-          <li><a href="https://github.com/jordanranson/triagonal-roticerod/zipball/master">Download <strong>ZIP File</strong></a></li>
-          <li><a href="https://github.com/jordanranson/triagonal-roticerod/tarball/master">Download <strong>TAR Ball</strong></a></li>
-          <li><a href="https://github.com/jordanranson/triagonal-roticerod">View On <strong>GitHub</strong></a></li>
-        </ul>
-      </header>
-      <section>
-        <h3>
-<a name="welcome-to-github-pages" class="anchor" href="#welcome-to-github-pages"><span class="octicon octicon-link"></span></a>Welcome to GitHub Pages.</h3>
+                text-decoration: none;
+                cursor: pointer;
+                vertical-align: bottom;
 
-<p>This automatic page generator is the easiest way to create beautiful pages for all of your projects. Author your page content here using GitHub Flavored Markdown, select a template crafted by a designer, and publish. After your page is generated, you can check out the new branch:</p>
+                border-bottom: solid 2px rgba(0,0,0,0.35);
+            }
 
-<pre><code>$ cd your_repo_root/repo_name
-$ git fetch origin
-$ git checkout gh-pages
-</code></pre>
+            body.dark .link {
+                color: #000;
+                border-bottom: solid 2px rgba(0,0,0,0.35);
+            }
 
-<p>If you're using the GitHub for Mac, simply sync your repository and you'll see the new branch.</p>
+            body.light .link {
+                color: #fff;
+                border-bottom: solid 2px rgba(255,255,255,0.35);
+            }
 
-<h3>
-<a name="designer-templates" class="anchor" href="#designer-templates"><span class="octicon octicon-link"></span></a>Designer Templates</h3>
+            .ampersand {
+                position: relative;
+                display: inline-block;
+                vertical-align: bottom;
+                height: 35px;
+                width: 35px;
+                margin: 0 3px;
+            }
 
-<p>We've crafted some handsome templates for you to use. Go ahead and continue to layouts to browse through them. You can easily go back to edit your page before publishing. After publishing your page, you can revisit the page generator and switch to another theme. Your Page content will be preserved if it remained markdown format.</p>
+            .ampersand::after {
+                position: absolute;
+                content: '&';
+                display: block;
 
-<h3>
-<a name="rather-drive-stick" class="anchor" href="#rather-drive-stick"><span class="octicon octicon-link"></span></a>Rather Drive Stick?</h3>
+                width: 16px;
+                height: 16px;
+                padding: 6px;
+                border: solid 2px rgba(0,0,0,0.35);
+                line-height: 16px;
+                font-size: 17px;
+                border-radius: 50%;
+                text-align: center;
+                font-weight: 700;
+                color: #000;
 
-<p>If you prefer to not use the automatic generator, push a branch named <code>gh-pages</code> to your repository to create a page manually. In addition to supporting regular HTML content, GitHub Pages support Jekyll, a simple, blog aware static site generator written by our own Tom Preston-Werner. Jekyll makes it easy to create site-wide headers and footers without having to copy them across every page. It also offers intelligent blog support and other advanced templating features.</p>
+                top: 50%; left: 50%;
+                transform: translate3d(-50%, -50%, 0);
+            }
 
-<h3>
-<a name="authors-and-contributors" class="anchor" href="#authors-and-contributors"><span class="octicon octicon-link"></span></a>Authors and Contributors</h3>
+            body.light .ampersand::after {
+                color: #fff;
+                background-color: rgba(255,255,255,0.35);
+            }
 
-<p>You can <a href="https://github.com/blog/821" class="user-mention">@mention</a> a GitHub username to generate a link to their profile. The resulting <code>&lt;a&gt;</code> element will link to the contributor's GitHub Profile. For example: In 2007, Chris Wanstrath (<a href="https://github.com/defunkt" class="user-mention">@defunkt</a>), PJ Hyett (<a href="https://github.com/pjhyett" class="user-mention">@pjhyett</a>), and Tom Preston-Werner (<a href="https://github.com/mojombo" class="user-mention">@mojombo</a>) founded GitHub.</p>
+            .triagonal {
+                position: absolute;
+                top: 0; left: 0;
+                width: 100%; height: 100%;
 
-<h3>
-<a name="support-or-contact" class="anchor" href="#support-or-contact"><span class="octicon octicon-link"></span></a>Support or Contact</h3>
+                background-repeat: no-repeat;
+                background-size: cover;
+                background-position: 50% 50%;
 
-<p>Having trouble with Pages? Check out the documentation at <a href="http://help.github.com/pages">http://help.github.com/pages</a> or contact <a href="mailto:support@github.com">support@github.com</a> and we’ll help you sort it out.</p>
-      </section>
-      <footer>
-        <p>This project is maintained by <a href="https://github.com/jordanranson">jordanranson</a></p>
-        <p><small>Hosted on GitHub Pages &mdash; Theme by <a href="https://github.com/orderedlist">orderedlist</a></small></p>
-      </footer>
-    </div>
-    <script src="javascripts/scale.fix.js"></script>
-    
-  </body>
+                z-index: 1;
+            }
+
+            header {
+                position: absolute;
+                top: 50%; left: 50%;
+                transform: translate3d(-50%, -50%, 0);
+
+                z-index: 10;
+            }
+
+            .sigil {
+                position: relative;
+                width: 80px;
+                height: 80px;
+                border: solid 3px #000;
+                border-radius: 50%;
+                margin-bottom: 30px;
+
+                transition: transform 100ms ease-in-out;
+            }
+
+            .sigil svg {
+                stroke: #000;
+                stroke-width: 9px;
+                fill: transparent;
+
+                position: absolute;
+                top: 50%; left: 50%;
+                transform: translate3d(-50%, -60%, 0);
+            }
+
+            body.light .sigil svg {
+                stroke: #fff;
+            }
+
+            header h1 {
+                white-space: nowrap;
+                font-size: 56px;
+                margin: 0 0 21px 0;
+            }
+
+            header h2 {
+                font-size: 28px;
+                margin: 0 0 17px 0;
+                font-weight: 400;
+            }
+
+            .content {
+
+            }
+        </style>
+        <script type="text/javascript" src="triagonal-roticerod.js"></script>
+        <script>
+            window.onload = function() {
+                var containerStyle = document.querySelector('.triagonal').style;
+                var sigil = document.querySelector('.sigil');
+                var body = document.querySelector('body');
+                var curTime = new Date().getHours();
+
+                // gradients for every hour of the day
+                // taken from http://codepen.io/Bork/pen/wJhEm
+                var shades = [
+                    Triagonal.createShade('#012459','#001322'), // 0
+                    Triagonal.createShade('#003972','#001322'),
+                    Triagonal.createShade('#003972','#001322'),
+                    Triagonal.createShade('#004372','#00182b'),
+                    Triagonal.createShade('#004372','#011d34'),
+                    Triagonal.createShade('#016792','#00182b'),
+
+                    Triagonal.createShade('#07729f','#042c47'), // 6
+                    Triagonal.createShade('#12a1c0','#07506e'),
+                    Triagonal.createShade('#74d4cc','#1386a6'),
+                    Triagonal.createShade('#efeebc','#61d0cf'),
+                    Triagonal.createShade('#fee154','#a3dec6'),
+                    Triagonal.createShade('#fdc352','#e8ed92'),
+
+                    Triagonal.createShade('#ffac6f','#ffe467'), // 12
+                    Triagonal.createShade('#fda65a','#ffe467'),
+                    Triagonal.createShade('#fd9e58','#ffe467'),
+                    Triagonal.createShade('#f18448','#ffd364'),
+                    Triagonal.createShade('#f06b7e','#f9a856'),
+                    Triagonal.createShade('#ca5a92','#f4896b'),
+
+                    Triagonal.createShade('#5b2c83','#d1628b'), // 18
+                    Triagonal.createShade('#371a79','#713684'),
+                    Triagonal.createShade('#28166b','#45217c'),
+                    Triagonal.createShade('#192861','#372074'),
+                    Triagonal.createShade('#040b3c','#233072'),
+                    Triagonal.createShade('#040b3c','#012459'),
+                ];
+
+                var textBrightness = [
+                    1, 1, 1, 1, 1, 1,
+                    1, 1, 0, 0, 0, 0,
+                    0, 0, 0, 0, 1, 1,
+                    1, 1, 1, 1, 1, 1
+                ];
+
+                function makeTriagonal() {
+                    body.className = textBrightness[curTime] === 0 ? 'dark' : 'light';
+
+                    var tri = Triagonal.generate({
+                        width: 'auto',
+                        height: 'auto',
+                        scale: 7,
+                        magnitude: 0,
+                        shadeVariance: 0.2,
+                        shade: shades[curTime]
+                    }).toDataURL();
+
+                    containerStyle.backgroundImage = 'url('+tri+')';
+                }
+                makeTriagonal();
+
+                // update shade if the hour changes
+                var angle = (360 / 60) * (new Date().getSeconds());
+                sigil.style.webkitTransform = 'rotate('+angle+'deg)';
+                setInterval(function() {
+                    var newTime = new Date().getHours();
+                    if(newTime > curTime || (curTime === 23 && newTime === 0)) {
+                        curTime = newTime;
+                        makeTriagonal();
+                    }
+
+                    angle += (360 / 60);
+                    sigil.style.webkitTransform = 'rotate('+angle+'deg)';
+                }, 1000);
+            }
+        </script>
+    </head>
+    <body class="dark">
+        <div class="triagonal tri1"></div>
+        <div class="triagonal tri2"></div>
+        <header>
+            <div class="sigil">
+                <svg xmlns="http://www.w3.org/2000/svg" width="70px" height="70px" viewBox="0 0 200 200" version="1.1">
+                    <polygon points="183.138438763306,172 16.8615612366939,172 100,28"/>
+                </svg>
+            </div>
+            <h1>Triagonal Roticerod</h1>
+            <h2>Create colourful triangle patterns</h2>
+            <h2>
+                <a href="https://jordanranson.github.io/triagonal-roticerod/triagonal-roticerod.js" class="link">Download</a>
+                <span class="ampersand"></span>
+                <a href="https://github.com/jordanranson/triagonal-roticerod" class="link">Github</a>
+            </h2>
+        </header>
+        <div class="content">
+
+        </div>
+
+        <script>
+            (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
+                (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
+            })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
+
+            ga('create', 'UA-49981032-2', 'jordanranson.github.io');
+            ga('send', 'pageview');
+
+        </script>
+    </body>
 </html>
+
