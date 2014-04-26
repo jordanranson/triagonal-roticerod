@@ -3,6 +3,7 @@ Triagonal = {};
 (function(){
 
     var _height = Math.sqrt(3) / 2; // height of an equilateral triangle
+    var _gradientScale = 100;
 
     function setupCanvas(canvas, context, params) {
         var tHeight = params.width/params.scale;
@@ -72,9 +73,10 @@ Triagonal = {};
 
     // returns a random pixel position within a threshold from a gradient
     // used to randomize the vertex colours in each row
-    function grdPos(y,a) {
-        var b = (a / 2) << 0;
-        return ((y*a)+b) + ((Math.random()*a)-b);
+    function grdPos(y,a,s) { // a = gradientVariance, s = scale
+        var b = a / 2;
+        var result = ((y*_gradientScale)+(_gradientScale/2)) + ((Math.random()*a)-b);
+        return result < 0 ? 0 : result > _gradientScale*s ? _gradientScale*s : result;
     }
 
     function drawPolygon(context, p1, p2, p3, fillStyle) {
@@ -94,7 +96,7 @@ Triagonal = {};
         if(!(grid[y+1] && grid[y+1][x+1])) return;
 
         var scale = params.size;
-        var color = params.shadeCtx.getImageData(0, grdPos(y,params.shadeVariance), 1, 1);
+        var color = params.shadeCtx.getImageData(0, grdPos(y,params.shadeVariance,params.scale), 1, 1);
 
         var p1, p2, p3;
 
@@ -113,7 +115,7 @@ Triagonal = {};
             };
             drawPolygon(context, p1, p2, p3, makeColor(color.data));
 
-            color = params.shadeCtx.getImageData(0, grdPos(y,params.shadeVariance), 1, 1);
+            color = params.shadeCtx.getImageData(0, grdPos(y,params.shadeVariance,params.scale), 1, 1);
             p1 = {
                 x: grid[y][x].x * scale,
                 y: grid[y][x].y * scale
@@ -143,7 +145,7 @@ Triagonal = {};
             };
             drawPolygon(context, p1, p2, p3, makeColor(color.data));
 
-            color = params.shadeCtx.getImageData(0, grdPos(y,params.shadeVariance), 1, 1);
+            color = params.shadeCtx.getImageData(0, grdPos(y,params.shadeVariance,params.scale), 1, 1);
             p1 = {
                 x: grid[y][x+1].x * scale,
                 y: grid[y][x+1].y * scale
@@ -169,7 +171,7 @@ Triagonal = {};
     }
 
     function drawBackground(context, width, y, params) {
-        var colorData = params.shadeCtx.getImageData(0, (y*params.shadeVariance)+(params.shadeVariance/2), 1, 1).data;
+        var colorData = params.shadeCtx.getImageData(0, (y*_gradientScale)+(_gradientScale/2), 1, 1).data;
 
         width *= params.size;
         y *= params.size;
@@ -205,15 +207,15 @@ Triagonal = {};
             window.innerHeight :
             params.height || 300;
 
-        params.scale        = params.scale    || 10;
+        params.scale        = params.scale || 10;
         params.scale       *= params.width > params.height ? 1 : _height;
-        params.magnitude    = params.magnitude >= 0 ? params.magnitude : 0.15; // 15% point randomization
-        params.grid         = params.grid     || generateGrid(params);
-        params.shadeVariance= params.shadeVariance || 10;
-        params.shade        = params.shade(params.scale+2, params.shadeVariance);
-        params.shadeCtx     = params.shade.getContext('2d');
         params.size         = params.width > params.height ?
             (params.width / params.scale) :
+        params.magnitude    = params.magnitude >= 0 ? params.magnitude : 0.15; // 15% point randomization
+        params.grid         = params.grid || generateGrid(params);
+        params.shadeVariance= params.shadeVariance ? params.shadeVariance * (params.size*5) : 100;
+        params.shade        = params.shade(params.scale+2, params.shadeVariance);
+        params.shadeCtx     = params.shade.getContext('2d');
             (params.height / params.scale)
 
         setupCanvas(canvas, context, params);
@@ -228,7 +230,7 @@ Triagonal = {};
 
     Triagonal.createShade = function(from, to) {
         return function(rows, variance) {
-            rows *= variance;
+            rows *= _gradientScale;
 
             var canvas = document.createElement('canvas');
                 canvas.height = rows;
