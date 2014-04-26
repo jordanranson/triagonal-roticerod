@@ -11,9 +11,6 @@
                 font-weight: 400;
                 font-family: "Raleway", sans-serif;
                 text-transform: uppercase;
-                transition:
-                    color 1000ms ease-in-out,
-                    border-color 1000ms ease-in-out;
             }
 
             body.dark {
@@ -33,9 +30,7 @@
                 cursor: pointer;
                 vertical-align: bottom;
 
-                transition:
-                    color 1000ms ease-in-out,
-                    border-color 1000ms ease-in-out;
+                border-bottom: solid 2px rgba(0,0,0,0.35);
             }
 
             body.dark .link {
@@ -65,22 +60,20 @@
                 width: 16px;
                 height: 16px;
                 padding: 6px;
-                background: rgba(0,0,0,0.35);
+                border: solid 2px rgba(0,0,0,0.35);
                 line-height: 16px;
                 font-size: 17px;
                 border-radius: 50%;
                 text-align: center;
                 font-weight: 700;
+                color: #000;
 
                 top: 50%; left: 50%;
                 transform: translate3d(-50%, -50%, 0);
-
-                transition:
-                    color 1000ms ease-in-out,
-                    background-color 1000ms ease-in-out;
             }
 
             body.light .ampersand::after {
+                color: #fff;
                 background-color: rgba(255,255,255,0.35);
             }
 
@@ -92,12 +85,41 @@
                 background-repeat: no-repeat;
                 background-size: cover;
                 background-position: 50% 50%;
+
+                z-index: 1;
             }
 
             header {
                 position: absolute;
                 top: 50%; left: 50%;
                 transform: translate3d(-50%, -50%, 0);
+
+                z-index: 10;
+            }
+
+            .sigil {
+                position: relative;
+                width: 80px;
+                height: 80px;
+                border: solid 3px #000;
+                border-radius: 50%;
+                margin-bottom: 30px;
+
+                transition: transform 100ms ease-in-out;
+            }
+
+            .sigil svg {
+                stroke: #000;
+                stroke-width: 9px;
+                fill: transparent;
+
+                position: absolute;
+                top: 50%; left: 50%;
+                transform: translate3d(-50%, -60%, 0);
+            }
+
+            body.light .sigil svg {
+                stroke: #fff;
             }
 
             header h1 {
@@ -120,7 +142,7 @@
         <script>
             window.onload = function() {
                 var containerStyle = document.querySelector('.triagonal').style;
-                var ampersandStyle = document.querySelector('.ampersand').style;
+                var sigil = document.querySelector('.sigil');
                 var body = document.querySelector('body');
                 var curTime = new Date().getHours();
 
@@ -159,12 +181,14 @@
                 var textBrightness = [
                     1, 1, 1, 1, 1, 1,
                     1, 1, 0, 0, 0, 0,
-                    0, 0, 1, 1, 1, 1,
+                    0, 0, 0, 0, 1, 1,
                     1, 1, 1, 1, 1, 1
                 ];
 
                 function makeTriagonal() {
-                    var triagonal = Triagonal.generate({
+                    body.className = textBrightness[curTime] === 0 ? 'dark' : 'light';
+
+                    var tri = Triagonal.generate({
                         width: 'auto',
                         height: 'auto',
                         scale: 7,
@@ -173,40 +197,39 @@
                         shade: shades[curTime]
                     }).toDataURL();
 
-                    var color = Triagonal.getColorFromShade(shades[curTime], 50);
-                    body.className = textBrightness[curTime] === 0 ? 'dark' : 'light';
-                    containerStyle.backgroundImage = 'url('+triagonal+')';
-                    ampersandStyle.color = color;
+                    containerStyle.backgroundImage = 'url('+tri+')';
                 }
                 makeTriagonal();
 
                 // update shade if the hour changes
+                var angle = (360 / 60) * (new Date().getSeconds());
+                sigil.style.webkitTransform = 'rotate('+angle+'deg)';
                 setInterval(function() {
                     var newTime = new Date().getHours();
                     if(newTime > curTime || (curTime === 23 && newTime === 0)) {
                         curTime = newTime;
                         makeTriagonal();
                     }
-                }, 60000);
 
-                setInterval(function() {
-                    curTime += 1;
-                    if(curTime > 23) {
-                        curTime = 0;
-                    }
-                    makeTriagonal();
+                    angle = (360 / 60) * (new Date().getSeconds());
+                    sigil.style.webkitTransform = 'rotate('+angle+'deg)';
                 }, 1000);
             }
         </script>
     </head>
     <body class="dark">
-        <div class="triagonal"></div>
+        <div class="triagonal tri1"></div>
+        <div class="triagonal tri2"></div>
         <header>
-            <div class="sigil"></div>
+            <div class="sigil">
+                <svg xmlns="http://www.w3.org/2000/svg" width="70px" height="70px" viewBox="0 0 200 200" version="1.1">
+                    <polygon points="183.138438763306,172 16.8615612366939,172 100,28"/>
+                </svg>
+            </div>
             <h1>Triagonal Roticerod</h1>
             <h2>Create colourful triangle patterns</h2>
             <h2>
-                <span class="link open-menu">Test Drive</span>
+                <span class="link open-menu">Download</span>
                 <span class="ampersand"></span>
                 <a href="#" class="link">Github</a>
             </h2>
