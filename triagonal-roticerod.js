@@ -2,11 +2,10 @@ Triagonal = {};
 
 (function(){
 
+    var _height = Math.sqrt(3) / 2; // height of an equilateral triangle
+
     function setupCanvas(canvas, params) {
-        canvas.width =
-            params.width && params.width === 'auto' ?
-                window.innerWidth :
-                params.width || 300;
+        canvas.width = params.width;
         canvas.height =
             params.height && params.height === 'auto' ?
                 window.innerHeight :
@@ -18,23 +17,22 @@ Triagonal = {};
     }
 
     function generateGrid(params) {
-        var grid        = [];
-        var h           = Math.sqrt(3) / 2; // height of an equilateral triangle
-        var rows        = params.rows || 5;
-        var cols        = params.cols || 5;
-        var magnitude   = params.magnitude || 0.15; // 15% point randomization
+        var grid      = [];
+        var magnitude = params.magnitude;
+        var length    = params.width > params.height ?
+                            Math.ceil(params.width / params.scale)+1 :
+                            Math.ceil(params.height / params.scale)+1;
         var row, col, o;
 
-        for(var y = 0; y < rows; y++) {
+        for(var y = 0; y < length; y++) {
             row = [];
-            o = y % 2 === 0 ? 0 : 0.5; // 50% offset on odd rows to make a triangle shape
-            o = 0;
+            o = y % 2 === 1 ? 0 : 0.5; // 50% offset on odd rows to make a triangle shape
             grid.push(row);
 
-            for(var x = 0; x < cols; x++) {
+            for(var x = 0; x < length; x++) {
                 col = {
-                    x: jitter(x+o, magnitude),
-                    y: jitter(y*h, magnitude)
+                    x: jitter(x, magnitude),
+                    y: jitter(y, magnitude)
                 }
                 row.push(col);
             }
@@ -55,7 +53,9 @@ Triagonal = {};
         context.closePath();
     }
 
-    function drawEven(context, grid, scale, x, y, params) {
+    function drawEven(context, x, y, params) {
+        var grid = params.grid;
+        var scale = params.scale;
         var p1, p2, p3;
 
         if(!(grid[y+1] && grid[y+1][x+1])) return;
@@ -89,7 +89,9 @@ Triagonal = {};
         drawPolygon(context, p1, p2, p3, '#00f');
     }
 
-    function drawOdd(context, grid, scale, x, y, params) {
+    function drawOdd(context, x, y, params) {
+        var grid = params.grid;
+        var scale = params.scale;
         var p1, p2, p3;
 
         if(!(grid[y+1] && grid[y+1][x+1])) return;
@@ -123,15 +125,12 @@ Triagonal = {};
         drawPolygon(context, p1, p2, p3, '#0f0');
     }
 
-    function drawTriangles(context, grid, width, height, params) {
-        var length = width > height ? width : height;
-        var scale = length / (width > height ? grid[0].length : grid.length);
-
-        for(var y = 0; y < grid.length; y++) {
-            for(var x = 0; x < grid[y].length; x++) {
+    function drawTriangles(context, params) {
+        for(var y = 0; y < params.grid.length; y++) {
+            for(var x = 0; x < params.grid[y].length; x++) {
                 y % 2 === 0 ?
-                    drawEven(context, grid, scale, x, y, params) :
-                    drawOdd(context, grid, scale, x, y, params);
+                    drawEven(context, x, y, params) :
+                    drawOdd(context, x, y, params);
             }
         }
     }
@@ -139,14 +138,25 @@ Triagonal = {};
     Triagonal.generate = function(params) {
         var canvas = document.createElement('canvas');
         var context = canvas.getContext('2d');
-        var width, height, grid;
+
+        params = params || {};
+
+        // width & height
+        params.width        = params.width && params.width === 'auto' ?
+            window.innerWidth :
+            params.width || 300;
+        params.height       = params.height && params.height === 'auto' ?
+            window.innerHeight :
+            params.height || 300;
+
+        params.scale        = params.scale    || 50;
+        params.magnitude    = params.magnitude >= 0 ? params.magnitude : 0.15; // 15% point randomization
+        params.grid         = params.grid     || generateGrid(params);
+
+        console.log(params);
 
         setupCanvas(canvas, params);
-        width = canvas.width;
-        height = canvas.height;
-
-        grid = generateGrid(params);
-        drawTriangles(context, grid, width, height, params);
+        drawTriangles(context, params);
 
         return canvas;
     };
