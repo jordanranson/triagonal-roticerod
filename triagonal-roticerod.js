@@ -239,7 +239,6 @@ Triagonal = {};
         params.shadeVariance= params.shadeVariance ? params.shadeVariance * (params.size*5) : 100;
         params.shade        = params.shade(params.scale+2, params.shadeVariance);
         params.shadeCtx     = params.shade.getContext('2d');
-            (params.height / params.scale)
 
         setupCanvas(canvas, context, params);
         drawTriangles(context, params);
