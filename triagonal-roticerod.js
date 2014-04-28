@@ -44,7 +44,7 @@ Triagonal = {};
             context.translate(0, -offset);
         } else {
             tHeight = params.height/params.scale;
-            height = (params.width/tHeight);
+            height = params.width/tHeight;
             offset = height - (height << 0);
             offset = (tHeight - (offset*tHeight)) / 2;
 
@@ -232,7 +232,8 @@ Triagonal = {};
         params.scale        = params.scale || 10;
         params.scale       *= params.width > params.height ? 1 : _height;
         params.size         = params.width > params.height ?
-            (params.width / params.scale) :
+            params.width / params.scale :
+            params.height / params.scale;
         params.magnitude    = params.magnitude >= 0 ? params.magnitude : 0.15; // 15% point randomization
         params.grid         = params.grid || generateGrid(params);
         params.shadeVariance= params.shadeVariance ? params.shadeVariance * (params.size*5) : 100;
